@@ -23,6 +23,7 @@
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
  */
+import DataViewObjects = powerbi.extensibility.utils.dataview.DataViewObjects;
 
 module powerbi.extensibility.visual {
     "use strict";
@@ -31,12 +32,24 @@ module powerbi.extensibility.visual {
         private updateCount: number;
         private settings: VisualSettings;
         private textNode: Text;
+        private urlNode: Text;
+        private targetUrl: string;
 
         constructor(options: VisualConstructorOptions) {
             console.log('Visual constructor', options);
             this.target = options.element;
             this.updateCount = 0;
             if (typeof document !== "undefined") {
+                // hidden url
+                const new_ph = document.createElement("p");
+                new_ph.setAttribute('id',"hidden_url");
+                new_ph.setAttribute('class',"hidden_url)");
+                new_ph.hidden = true;
+                
+                this.urlNode = document.createTextNode(this.targetUrl);
+                new_ph.appendChild(this.urlNode);
+                this.target.appendChild(new_ph);
+                //
                 const new_p0: HTMLElement = document.createElement("p");
                 new_p0.appendChild(document.createTextNode("Start Date:"));
                 const new_sd: HTMLInputElement = document.createElement("input");
@@ -84,7 +97,8 @@ module powerbi.extensibility.visual {
                                                         new_dd.value,
                                                         new_as.value,
                                                         new_pd.value,
-                                                        new_at.value 
+                                                        new_at.value,
+                                                        new_ph.innerHTML 
                                                     ); };
                             
                 this.target.appendChild(new_b) ;
@@ -95,7 +109,7 @@ module powerbi.extensibility.visual {
                 new_p5.appendChild(new_message);
                 this.target.appendChild(new_p5);
             }
-            function btnClick(target :HTMLElement, startdate,duedate,assign,product, task ){
+            function btnClick(target :HTMLElement, startdate,duedate,assign,product, task, hiddenText ){
                 //alert(task);
                 
                 var sendTask = product + ": " + task;
@@ -105,10 +119,15 @@ module powerbi.extensibility.visual {
                                                 "startdate" : startdate,
                                                 "duedate" : duedate,
                                     });
-               // alert(sendData);
+                var elem = document.createElement('textarea');
+                elem.innerHTML = hiddenText;
+                var postUrl2 = elem.value;
                 
                 $.ajax({
+                    /*
                     url:'https://prod-01.australiasoutheast.logic.azure.com:443/workflows/843568442c4d40daabd0211ad89d5484/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=jrpszMuC8dZOv8ar9AsLLRzKTu95h6SCW8zC4DdFLhE',
+                    */
+                    url: postUrl2,
                     type:"POST",                              
                     data: sendData,
                     contentType:"application/json; charset=utf-8",
@@ -146,6 +165,11 @@ module powerbi.extensibility.visual {
             for (let i = 0, len = Math.max(category.values.length, dataValue.values.length); i < len; i++) {
                 let input = this.target.getElementsByClassName("product");
                 input[0].setAttribute('value',String(category.values[0]));
+            }
+            this.targetUrl = DataViewObjects.getValue(options.dataViews[0].metadata.objects, { objectName: "url", propertyName: "targetUrl" }, this.targetUrl);           
+            // console.log(this.targetUrl);  
+             if (typeof this.urlNode !== "undefined") {
+                 this.urlNode.textContent = this.targetUrl
             }
         }
 

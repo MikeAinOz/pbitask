@@ -12,6 +12,17 @@
         }
     ],
     "objects": {
+        "url":{
+            "displayName": "Url",
+            "properties" : {
+                "targetUrl":{
+                    "displayName": "Target URL",
+                        "type": {
+                        "text": true
+                        }
+                    }
+                }
+            },
         "dataPoint": {
             "displayName": "Data colors",
             "properties": {
