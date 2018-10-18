@@ -24,7 +24,10 @@
  *  THE SOFTWARE.
  */
 import DataViewObjects = powerbi.extensibility.utils.dataview.DataViewObjects;
-
+interface Payload {
+            assign : string, task : string ,  taskdescription : string,
+            startdate : string , duedate : string
+        };
 module powerbi.extensibility.visual {
     "use strict";
     export class Visual implements IVisual {
@@ -34,6 +37,7 @@ module powerbi.extensibility.visual {
         private textNode: Text;
         private urlNode: Text;
         private targetUrl: string;
+        
 
         constructor(options: VisualConstructorOptions) {
             console.log('Visual constructor', options);
@@ -50,12 +54,16 @@ module powerbi.extensibility.visual {
                 new_ph.appendChild(this.urlNode);
                 this.target.appendChild(new_ph);
                 //
+                let now = new Date();
+                let day = ("0" + now.getDate()).slice(-2);
+                let month = ("0" + (now.getMonth() + 1)).slice(-2);
+                let today = now.getFullYear()+"-"+(month)+"-"+(day) ;
                 const new_p0: HTMLElement = document.createElement("p");
                 new_p0.appendChild(document.createTextNode("Start Date:"));
                 const new_sd: HTMLInputElement = document.createElement("input");
                 new_sd.setAttribute("type","date");
                 new_sd.setAttribute("class","date");
-                new_sd.setAttribute("placeholder","dd-mm-yyyy");
+                new_sd.value = today;
                 new_p0.appendChild(new_sd);
                 this.target.appendChild(new_p0);
                 const new_p1: HTMLElement = document.createElement("p");
@@ -63,6 +71,7 @@ module powerbi.extensibility.visual {
                 const new_dd: HTMLInputElement = document.createElement("input");
                 new_dd.setAttribute("type","date");
                 new_dd.setAttribute("class","date");
+                new_dd.value = today;
                 new_p1.appendChild(new_dd);
                 this.target.appendChild(new_p1);
                 const new_p2: HTMLElement= document.createElement("p");
@@ -91,13 +100,16 @@ module powerbi.extensibility.visual {
                 new_b.setAttribute('type', "submit");
                 new_b.setAttribute('value', "Commit");
                 new_b.setAttribute('id',"bUpdate");
-                
-                new_b.onclick = function () { btnClick(options.element, 
-                                                        new_sd.value,
-                                                        new_dd.value,
-                                                        new_as.value,
-                                                        new_pd.value,
-                                                        new_at.value,
+                               
+                new_b.onclick = function () { 
+                                            let payload: Payload = {
+                                                assign : new_as.value, 
+                                                task : new_pd.value ,  
+                                                taskdescription : new_at.value,
+                                                startdate : new_sd.value , 
+                                                duedate : new_dd.value
+                                                }
+                                            btnClick(payload,
                                                         new_ph.innerHTML 
                                                     ); };
                             
@@ -109,25 +121,14 @@ module powerbi.extensibility.visual {
                 new_p5.appendChild(new_message);
                 this.target.appendChild(new_p5);
             }
-            function btnClick(target :HTMLElement, startdate,duedate,assign,product, task, hiddenText ){
-                //alert(task);
+            function btnClick(payload :Payload, targetUrl ){
                 
-                var sendTask = product + ": " + task;
-                
-                var sendData = JSON.stringify({ "assign" : assign,
-                                                "task" :  sendTask,
-                                                "startdate" : startdate,
-                                                "duedate" : duedate,
-                                    });
-                var elem = document.createElement('textarea');
-                elem.innerHTML = hiddenText;
-                var postUrl2 = elem.value;
-                
+                let sendData = JSON.stringify(payload);                   
+                let elem = document.createElement('textarea');
+                elem.innerHTML = targetUrl;
+                let postUrl = elem.value;               
                 $.ajax({
-                    /*
-                    url:'https://prod-01.australiasoutheast.logic.azure.com:443/workflows/843568442c4d40daabd0211ad89d5484/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=jrpszMuC8dZOv8ar9AsLLRzKTu95h6SCW8zC4DdFLhE',
-                    */
-                    url: postUrl2,
+                    url: postUrl,
                     type:"POST",                              
                     data: sendData,
                     contentType:"application/json; charset=utf-8",
