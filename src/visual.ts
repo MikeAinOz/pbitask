@@ -76,8 +76,20 @@ module powerbi.extensibility.visual {
                 this.target.appendChild(new_p1);
                 const new_p2: HTMLElement= document.createElement("p");
                 new_p2.appendChild(document.createTextNode("Assign:"));
-                const new_as: HTMLInputElement = document.createElement("input")
-                new_as.setAttribute("type","email");
+                const new_as: HTMLSelectElement = document.createElement("select")
+                fetch('https://aon42.blob.core.windows.net/container42/StaffList.json')
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(staffList) {  
+                    var person;   
+                    for (person of staffList){
+                    var option = document.createElement("option");
+                    option.value = person.Email;
+                    option.text = person.Name;
+                    new_as.appendChild(option);
+                    }
+                }); 
                 new_as.setAttribute("class","email");
                 new_p2.appendChild(new_as);
                 this.target.appendChild(new_p2);
