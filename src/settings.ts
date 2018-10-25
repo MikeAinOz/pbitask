@@ -31,6 +31,7 @@ module powerbi.extensibility.visual {
     export class VisualSettings extends DataViewObjectsParser {
       public dataPoint: dataPointSettings = new dataPointSettings();
       public url: postUrlSettings = new postUrlSettings();
+      public staffList: staffListSettings = new staffListSettings();
       }
 
     export class dataPointSettings {
@@ -46,6 +47,11 @@ module powerbi.extensibility.visual {
       public fontSize: number = 12;
      }
      export class postUrlSettings {
+      // Target Url
+      public targetUrl: string = "https://";
+      
+    }
+    export class staffListSettings {
       // Target Url
       public targetUrl: string = "https://";
       

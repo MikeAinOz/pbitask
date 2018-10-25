@@ -37,6 +37,7 @@ module powerbi.extensibility.visual {
         private textNode: Text;
         private urlNode: Text;
         private targetUrl: string;
+        private staffUrl: string;
         
 
         constructor(options: VisualConstructorOptions) {
@@ -77,34 +78,25 @@ module powerbi.extensibility.visual {
                 const new_p2: HTMLElement= document.createElement("p");
                 new_p2.appendChild(document.createTextNode("Assign:"));
                 const new_as: HTMLSelectElement = document.createElement("select")
-                fetch('https://aon42.blob.core.windows.net/container42/StaffList.json')
-                .then(function(response) {
-                    return response.json();
-                })
-                .then(function(staffList) {  
-                    var person;   
-                    for (person of staffList){
-                    var option = document.createElement("option");
-                    option.value = person.Email;
-                    option.text = person.Name;
-                    new_as.appendChild(option);
-                    }
-                }); 
+                new_as.id = "staffList";
+                this.staffUrl = "";
                 new_as.setAttribute("class","email");
                 new_p2.appendChild(new_as);
                 this.target.appendChild(new_p2);
                 const new_p3: HTMLElement = document.createElement("p");
-                new_p3.appendChild(document.createTextNode("Product"));
+                new_p3.appendChild(document.createTextNode("Task"));
                 const new_pd: HTMLInputElement = document.createElement("input");
                 new_pd.setAttribute("type","text");
-                new_pd.setAttribute("class","product");
+                new_pd.setAttribute("class","task");
+                new_pd.setAttribute("id","task");
                 new_p3.appendChild(new_pd);
                 this.target.appendChild(new_p3);
                 const new_p4: HTMLElement = document.createElement("p");
-                new_p4.appendChild(document.createTextNode("Task"));
+                new_p4.appendChild(document.createTextNode("Detail"));
                 const new_at: HTMLTextAreaElement = document.createElement("textarea");
                 new_at.setAttribute("type","textarea");
                 new_at.setAttribute("class","multiline");
+                new_at.setAttribute('id',"detail");
                 new_p4.appendChild(new_at);
                 this.target.appendChild(new_p4);
                // Button               
@@ -134,7 +126,6 @@ module powerbi.extensibility.visual {
                 this.target.appendChild(new_p5);
             }
             function btnClick(payload :Payload, targetUrl ){
-                
                 let sendData = JSON.stringify(payload);                   
                 let elem = document.createElement('textarea');
                 elem.innerHTML = targetUrl;
@@ -160,11 +151,8 @@ module powerbi.extensibility.visual {
                                 202: function() {
                                     alert("202");
                                     }
-                                }
-                               
-                            
-                        });       
-                                             
+                                }                          
+                        });                                                   
             }
         }
 
@@ -176,14 +164,36 @@ module powerbi.extensibility.visual {
             let category = categorical.categories[0]; 
             let dataValue = categorical.values[0]; 
             for (let i = 0, len = Math.max(category.values.length, dataValue.values.length); i < len; i++) {
-                let input = this.target.getElementsByClassName("product");
-                input[0].setAttribute('value',String(category.values[0]));
+                let input = document.getElementById("task");
+                input.setAttribute('value',String(category.values[0]));
             }
-            this.targetUrl = DataViewObjects.getValue(options.dataViews[0].metadata.objects, { objectName: "url", propertyName: "targetUrl" }, this.targetUrl);           
-            // console.log(this.targetUrl);  
-             if (typeof this.urlNode !== "undefined") {
+            this.targetUrl = this.settings.url.targetUrl;         
+
+            if (typeof this.urlNode !== "undefined") {
                  this.urlNode.textContent = this.targetUrl
             }
+            if (this.staffUrl !== this.settings.staffList.targetUrl) {
+                this.staffUrl = this.settings.staffList.targetUrl;
+                document.getElementById('staffList').innerHTML = "";
+                let selectList: HTMLElement = document.getElementById('staffList');
+                fetch(this.staffUrl)
+                    .then(function(response) {
+                        return response.json();
+                    })
+                    .then(function(staffList) {  
+                        var person;   
+                        for (person of staffList){
+                        var option = document.createElement("option");
+                        option.value = person.Email;
+                        option.text = person.Name;
+                        selectList.appendChild(option);
+                        }
+                    }); 
+            }
+            let detail: HTMLTextAreaElement = document.getElementById('detail') as HTMLTextAreaElement;
+            let name = categorical.values[0].source.displayName;
+            let value = categorical.values[0].values[0]
+            detail.value = name + ": " + value;
         }
 
         private static parseSettings(dataView: DataView): VisualSettings {

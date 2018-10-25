@@ -23,6 +23,17 @@
                     }
                 }
             },
+        "staffList":{
+            "displayName": "Staff List",
+            "properties" : {
+                "targetUrl":{
+                    "displayName": "Target URL",
+                        "type": {
+                        "text": true
+                        }
+                    }
+                }
+            },
         "dataPoint": {
             "displayName": "Data colors",
             "properties": {
