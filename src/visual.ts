@@ -32,18 +32,14 @@ module powerbi.extensibility.visual {
     "use strict";
     export class Visual implements IVisual {
         private target: HTMLElement;
-        private updateCount: number;
         private settings: VisualSettings;
-        private textNode: Text;
         private urlNode: Text;
         private targetUrl: string;
         private staffUrl: string;
         
-
         constructor(options: VisualConstructorOptions) {
             console.log('Visual constructor', options);
             this.target = options.element;
-            this.updateCount = 0;
             if (typeof document !== "undefined") {
                 // hidden url
                 const new_ph = document.createElement("p");
@@ -163,10 +159,8 @@ module powerbi.extensibility.visual {
             let categorical = dataViews[0].categorical; 
             let category = categorical.categories[0]; 
             let dataValue = categorical.values[0]; 
-            for (let i = 0, len = Math.max(category.values.length, dataValue.values.length); i < len; i++) {
-                let input = document.getElementById("task");
-                input.setAttribute('value',String(category.values[0]));
-            }
+            let input = document.getElementById("task") as HTMLInputElement;
+            input.value = String(category.values[0]);
             this.targetUrl = this.settings.url.targetUrl;         
 
             if (typeof this.urlNode !== "undefined") {
