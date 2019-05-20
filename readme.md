@@ -1,1 +1,3 @@
-This Power BI Custom Visual is uded to send tasks to a URL
+PBI Task
+--------
+This Power BI Custom Visual is used to send tasks to a URL
