@@ -1,0 +1,1 @@
+This Power BI Custom Visual is uded to send tasks to a URL
