@@ -110,7 +110,7 @@ import { VisualSettings } from "./settings";
                // Button               
                 const new_b = document.createElement("input");
                 new_b.setAttribute('type', "submit");
-                new_b.setAttribute('value', "Commit");
+                new_b.setAttribute('value', "Submit Task");
                 new_b.setAttribute('id',"bUpdate");
                                
                 new_b.onclick = function () { 
