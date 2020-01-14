@@ -5,3 +5,5 @@ dist
 typings
 .api
 *.log
+webpack.statistics.prod.html
+webpack.statistics.dev.html
