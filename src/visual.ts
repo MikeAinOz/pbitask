@@ -46,23 +46,13 @@ import { VisualSettings } from "./settings";
         private target: HTMLElement;
         private settings: VisualSettings;
         private urlNode: Text;
-        private targetUrl: string;
-        private staffUrl: string;
+        static targetUrl: string;
+        static staffUrl: string;
         
         constructor(options: VisualConstructorOptions) {
             console.log('Visual constructor', options);
             this.target = options.element;
-            if (typeof document !== "undefined") {
-                // hidden url
-                const new_ph = document.createElement("p");
-                new_ph.setAttribute('id',"hidden_url");
-                new_ph.setAttribute('class',"hidden_url)");
-                new_ph.hidden = true;
-                
-                this.urlNode = document.createTextNode(this.targetUrl);
-                new_ph.appendChild(this.urlNode);
-                this.target.appendChild(new_ph);
-                //
+            if (typeof document !== "undefined") {               
                 let now = new Date();
                 let day = ("0" + now.getDate()).slice(-2);
                 let month = ("0" + (now.getMonth() + 1)).slice(-2);
@@ -87,7 +77,7 @@ import { VisualSettings } from "./settings";
                 new_p2.appendChild(document.createTextNode("Assign:"));
                 const new_as: HTMLSelectElement = document.createElement("select")
                 new_as.id = "staffList";
-                this.staffUrl = "";
+                Visual.staffUrl = "";
                 new_as.setAttribute("class","email");
                 new_p2.appendChild(new_as);
                 this.target.appendChild(new_p2);
@@ -122,7 +112,7 @@ import { VisualSettings } from "./settings";
                                                 duedate : new_dd.value
                                                 }
                                             btnClick(payload,
-                                                        new_ph.innerHTML 
+                                                        Visual.targetUrl 
                                                     ); };
                             
                 this.target.appendChild(new_b) ;
@@ -135,12 +125,9 @@ import { VisualSettings } from "./settings";
             }
             function btnClick(payload :Payload, targetUrl ){
                 console.log("button Click");
-                let sendData = JSON.stringify(payload);                   
-                let elem = document.createElement('textarea');
-                elem.innerHTML = targetUrl;
-                let postUrl = elem.value;               
+                let sendData = JSON.stringify(payload);               
                 $.ajax({
-                    url: postUrl,
+                    url: targetUrl,
                     type:"POST",                              
                     data: sendData,
                     contentType:"application/json; charset=utf-8",
@@ -171,19 +158,15 @@ import { VisualSettings } from "./settings";
             let dataViews = options.dataViews; 
             let categorical = dataViews[0].categorical; 
             let category = categorical.categories[0]; 
-            let dataValue = categorical.values[0]; 
             let input = document.getElementById("task") as HTMLInputElement;
             input.value = String(category.values[0]);
-            this.targetUrl = this.settings.url.targetUrl;         
+            Visual.targetUrl = this.settings.url.targetUrl;         
 
-            if (typeof this.urlNode !== "undefined") {
-                 this.urlNode.textContent = this.targetUrl
-            }
-            if (this.staffUrl !== this.settings.staffList.targetUrl) {
-                this.staffUrl = this.settings.staffList.targetUrl;
+            if (Visual.staffUrl !== this.settings.staffList.targetUrl) {
+                Visual.staffUrl = this.settings.staffList.targetUrl;
                 document.getElementById('staffList').innerHTML = "";
                 let selectList: HTMLElement = document.getElementById('staffList');
-                fetch(this.staffUrl)
+                fetch(Visual.staffUrl)
                     .then(function(response) {
                         return response.json();
                     })
