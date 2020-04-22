@@ -17,8 +17,8 @@
   },
   "devDependencies": {
     "ts-loader": "5.2.2",
-    "typescript": "3.0.1",
-    "tslint": "^4.4.2",
-    "tslint-microsoft-contrib": "^4.0.0"
+    "tslint": "^5.20.1",
+    "tslint-microsoft-contrib": "^4.0.0",
+    "typescript": "3.0.1"
   }
 }
