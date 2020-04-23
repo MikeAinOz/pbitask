@@ -20,6 +20,58 @@ The URL destination of the payload is specified on the format tab.
 
 The visual acknowledges a successful call to the destination service
 
+
 Test Plan
 ---------
-1. npm audit fix -- before testing
+
+Preparation:
+
+1. Create a http request in flow with this schema:
+    {
+    "type": "object",
+    "properties": {
+        "assign": {
+        "type": "string"
+        },
+        "task": {
+        "type": "string"
+        },
+        "taskdescription": {
+        "type": "string"
+        },
+        "startdate": {
+        "type": "string"
+        },
+        "duedate": {
+        "type": "string"
+        }
+    }
+    }
+    2. Define Response Step with schema:
+        {
+    "type": "object",
+    "properties": {
+        "confirm": {
+        "type": "string"
+        }
+    }
+    }
+    3. Create a staff list format [{ "Name": "Zoe","Email": "zoe@yourdomain.com"}]
+    
+    Start Visual:
+    1. before testing -> npm audit fix
+    2. start application -> pbiviz start
+    3. Publish Test Report
+
+    Tests
+    1. Test Edge Condition on entry to Test Report , use Submit straight away, check output
+    2. Standard Test: select a new product and modfy all task fields and Submit
+    3. Fault test, turn Flow off and test
+
+    Results
+    1. Tested OK
+    2. Tested OK
+    3. No Message to indicate failure?
+
+
+
