@@ -25,7 +25,7 @@
  */
 interface Payload {
             assign : string, task : string ,  taskdescription : string,
-            startdate : string , duedate : string
+            startdate : string , duedate : string, categoryid : string
         };
 
  "use strict";
@@ -45,9 +45,9 @@ import { VisualSettings } from "./settings";
     export class Visual implements IVisual {
         private target: HTMLElement;
         private settings: VisualSettings;
-        private urlNode: Text;
         static targetUrl: string;
         static staffUrl: string;
+        static categoryId: string;
         
         constructor(options: VisualConstructorOptions) {
             console.log('Visual constructor', options);
@@ -87,6 +87,7 @@ import { VisualSettings } from "./settings";
                 new_pd.setAttribute("type","text");
                 new_pd.setAttribute("class","task");
                 new_pd.setAttribute("id","task");
+                //   new_pd.readOnly = true;
                 new_p3.appendChild(new_pd);
                 this.target.appendChild(new_p3);
                 const new_p4: HTMLElement = document.createElement("p");
@@ -109,7 +110,8 @@ import { VisualSettings } from "./settings";
                                                 task : new_pd.value ,  
                                                 taskdescription : new_at.value,
                                                 startdate : new_sd.value , 
-                                                duedate : new_dd.value
+                                                duedate : new_dd.value,
+                                                categoryid : Visual.categoryId
                                                 }
                                             btnClick(payload,
                                                         Visual.targetUrl 
@@ -122,6 +124,12 @@ import { VisualSettings } from "./settings";
                 var new_message = document.createTextNode("Task Assigned");
                 new_p5.appendChild(new_message);
                 this.target.appendChild(new_p5);
+                const new_p6 = document.createElement("p");
+                new_p6.setAttribute('id',"fail_msg");
+                new_p6.hidden = true;
+                var new_message = document.createTextNode("POST failed, check URL");
+                new_p6.appendChild(new_message);
+                this.target.appendChild(new_p6);
             }
             function btnClick(payload :Payload, targetUrl ){
                 console.log("button Click");
@@ -140,6 +148,7 @@ import { VisualSettings } from "./settings";
                                     },
                         
                     error: function( jqXhr, textStatus, errorThrown ){
+                            $('#fail_msg').fadeIn(); ;  
                             alert(errorThrown);
                             alert(textStatus);
                         },                    
@@ -184,6 +193,8 @@ import { VisualSettings } from "./settings";
             let name = categorical.values[0].source.displayName;
             let value = categorical.values[0].values[0]
             detail.value = name + ": " + value;
+            // the second value if present is the categoryid
+            Visual.categoryId = categorical.values[1].values[0].toString()
         }
 
         private static parseSettings(dataView: DataView): VisualSettings {
