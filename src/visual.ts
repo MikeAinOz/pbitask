@@ -25,7 +25,7 @@
  */
 interface Payload {
     assign: string, task: string, taskdescription: string,
-    startdate: string, duedate: string, categoryid: string
+    startdate: string, duedate: string, categoryid: string, username: string
 };
 
 "use strict";
@@ -48,6 +48,7 @@ export class Visual implements IVisual {
     static targetUrl: string;
     static staffUrl: string;
     static categoryId: string;
+    static userName: string;
 
     constructor(options: VisualConstructorOptions) {
         this.target = options.element;
@@ -110,7 +111,8 @@ export class Visual implements IVisual {
                     taskdescription: new_at.value,
                     startdate: new_sd.value,
                     duedate: new_dd.value,
-                    categoryid: Visual.categoryId
+                    categoryid: Visual.categoryId,
+                    username: Visual.userName
                 }
                 btnClick(payload,
                     Visual.targetUrl
@@ -207,6 +209,8 @@ export class Visual implements IVisual {
         detail.value = name + ": " + value;
         // the second value if present is the categoryid
         Visual.categoryId = categorical.values[1].values[0].toString()
+        // the third value is the username
+        Visual.userName = categorical.values[2].values[0].toString()
     }
 
     private static parseSettings(dataView: DataView): VisualSettings {

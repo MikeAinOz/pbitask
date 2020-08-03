@@ -1,48 +1,50 @@
 {
     "dataRoles": [
-        
         {
             "displayName": "Category",
             "name": "category",
             "kind": "Grouping"
         },
-      
         {
             "displayName": "Measure",
             "name": "measure",
             "kind": "Measure"
-        } ,
+        },
         {
             "displayName": "CategoryId",
             "name": "categoryid",
             "kind": "Measure"
+        },
+        {
+            "displayName": "UserName",
+            "name": "username",
+            "kind": "Measure"
         }
     ],
     "objects": {
-        "url":{
+        "url": {
             "displayName": "Url",
-            "properties" : {
-                "targetUrl":{
+            "properties": {
+                "targetUrl": {
                     "displayName": "Target URL",
-                        "type": {
+                    "type": {
                         "text": true
-                        }
-                    }
-                }
-            },
-        "staffList":{
-            "displayName": "Staff List",
-            "properties" : {
-                "targetUrl":{
-                    "displayName": "Target URL",
-                        "type": {
-                        "text": true
-                        }
                     }
                 }
             }
+        },
+        "staffList": {
+            "displayName": "Staff List",
+            "properties": {
+                "targetUrl": {
+                    "displayName": "Target URL",
+                    "type": {
+                        "text": true
+                    }
+                }
+            }
+        }
     },
-    
     "dataViewMappings": [
         {
             "categorical": {
@@ -51,22 +53,26 @@
                         "in": "category"
                     }
                 },
-                "values": {                  
+                "values": {
                     "select": [
-                            {
-                                "bind": {
-                                    "to": "measure"
+                        {
+                            "bind": {
+                                "to": "measure"
                             }
                         },
                         {
                             "bind": {
                                 "to": "categoryid"
+                            }
+                        },
+                        {
+                            "bind": {
+                                "to": "username"
+                            }
                         }
-                    }
                     ]
                 }
             }
         }
-        
     ]
 }
